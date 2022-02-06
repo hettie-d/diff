@@ -1,11 +1,6 @@
---select * from diff.full_constraint_compare('prod','stage','bx')
---select * from diff.full_constraint_compare('stage','prod','bx','supplier_commodity_states')
---select * from diff.constraint_compare('prod','stage','bx')
---select * from diff.constraint_compare('stage','dev','bx','supplier_commodity_states')
---select * from diff.constraint_compare('stage','dev','bx')
---select * from diff.constraint_compare('dev','prod','bx')
---select * from diff.constraint_compare('prod','stage,'bx')
---select * from diff.constraint_compare('stage','dev','bx', 'meter_suppliers')
+--select * from diff.full_constraint_compare('airlines','hettie', 'postgres_air')
+--select * from diff.full_constraint_compare('airlines','hettie', 'postgres_air','flight')
+--select * from diff.constraint_compare('airlines','hettie', 'postgres_air','flight')
 
 drop type if exists diff.constraint_diff_record cascade;
 create type diff.constraint_diff_record as (
