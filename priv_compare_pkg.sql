@@ -31,7 +31,7 @@ return query  execute
    $sql$ select $sql$|| quote_literal(p_source_1)||
    $sql$,
     a.* from
-     (select * from dblink('bx_$sql$||p_source_1||$sql$',
+     (select * from dblink('fs_$sql$||p_source_1||$sql$',
      	$$select 
      	    relname::text,
           rolname,
@@ -51,7 +51,7 @@ return query  execute
          $$)
        AS t1 (relname text, user_name text, perm text)
      except 
-      select * from dblink('bx_$sql$||p_source_2||$sql$',
+      select * from dblink('fs_$sql$||p_source_2||$sql$',
      	$$select 
      	    relname::text,
           rolname,
@@ -74,7 +74,7 @@ return query  execute
      select $sql$|| quote_literal(p_source_2)||
      $sql$,
        a.* from
-        (select * from dblink('bx_$sql$||p_source_2||$sql$',
+        (select * from dblink('fs_$sql$||p_source_2||$sql$',
      	    $$select relname::text,
             rolname,
             perm_string[3]::text
@@ -93,7 +93,7 @@ return query  execute
           $$) 
        AS t1 (relname text, user_name text, perm text)
     except 
-       select * from dblink('bx_$sql$||p_source_1||$sql$',
+       select * from dblink('fs_$sql$||p_source_1||$sql$',
      	    $$select 
      	       relname::text,
              rolname,
@@ -128,7 +128,7 @@ begin
 v_sql:=$sql$ select $sql$|| quote_literal(p_source_1)||
 $sql$,
  a.* from
-(select * from dblink('bx_$sql$||p_source_1||$sql$',
+(select * from dblink('fs_$sql$||p_source_1||$sql$',
 	$$select nspname::text,
 rolname,
 object_type,
@@ -159,7 +159,7 @@ where rolname not like 'goose_island_owner%'
 $$)
 AS t1 (relname text, user_name text, object_type text, perm text)
 except 
-select * from dblink('bx_$sql$||p_source_2||$sql$',
+select * from dblink('fs_$sql$||p_source_2||$sql$',
 	$$select nspname::text,
 rolname,
 object_type,
@@ -193,7 +193,7 @@ union all
 select $sql$|| quote_literal(p_source_2)||
 $sql$,
  a.* from
-(select * from dblink('bx_$sql$||p_source_2||$sql$',
+(select * from dblink('fs_$sql$||p_source_2||$sql$',
 	$$select nspname::text,
 rolname,
 object_type,
@@ -226,7 +226,7 @@ where rolname not like 'goose_island_owner%'
 $$)
 AS t1 (relname text, user_name text, object_type text,  perm text)
 except 
-select * from dblink('bx_$sql$||p_source_1||$sql$',
+select * from dblink('fs_$sql$||p_source_1||$sql$',
 	$$select nspname::text,
 rolname,
 object_type,
@@ -279,7 +279,7 @@ declare v_sql text;
 begin
 	v_sql := $sql$ select 'schema priv' ,
 a.* from
-(select * from dblink('bx_$sql$||p_db_name||$sql$',
+(select * from dblink('fs_$sql$||p_db_name||$sql$',
 	$$select 
 	    nspname::text,
       rolname,
@@ -322,7 +322,7 @@ union all
  select 'table priv' $sql$ ||
 $sql$,
  a.* from
-(select * from dblink('bx_$sql$||p_db_name||$sql$',
+(select * from dblink('fs_$sql$||p_db_name||$sql$',
 	$$select nspname||'.'||relname::text,
 rolname,
 'n/a',
@@ -357,7 +357,7 @@ declare v_sql text;
 begin
 	v_sql := $sql$ select 'schema priv' ,
 a.* from
-(select * from dblink('bx_$sql$||p_db_name||$sql$',
+(select * from dblink('fs_$sql$||p_db_name||$sql$',
 	$$select nspname::text,
 rolname,
 object_type,
@@ -393,7 +393,7 @@ union all
  select 'table priv' $sql$ ||
 $sql$,
  a.* from
-(select * from dblink('bx_$sql$||p_db_name||$sql$',
+(select * from dblink('fs_$sql$||p_db_name||$sql$',
 	$$select nspname||'.'||relname::text,
 rolname,
 'n/a',
@@ -418,7 +418,7 @@ union all
  select 'table priv inherit' $sql$ ||
 $sql$,
  a.* from
-(select * from dblink('bx_$sql$||p_db_name||$sql$',
+(select * from dblink('fs_$sql$||p_db_name||$sql$',
 	$$select nspname||'.'||relname::text,
 member,
 'n/a',
