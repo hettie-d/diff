@@ -87,10 +87,13 @@ $sql$,
  case relkind when 'r' then 'table'
  when 'v' then 'view'
  else 'matview'
- end , relowner::text from $sql$||p_source_1||
+ end , 
+ rolname ::text from $sql$||p_source_1||
   $sql$_catalog_ft.pg_class c
  join $sql$||p_source_1||$sql$_catalog_ft.pg_namespace n
  on n.oid=relnamespace
+ join $sql$||p_source_1||$sql$_catalog_ft.pg_roles rl
+ on relowner=rl.oid
  where relkind in ('r', 'm', 'v')
  and nspname=$sql$||quote_literal(p_schema)|| $sql$
 except 
@@ -99,10 +102,12 @@ select relname::text,
  when 'v' then 'view'
  else 'matview'
  end,
- relowner::text from $sql$||p_source_2||
+ rolname ::text from $sql$||p_source_2||
   $sql$_catalog_ft.pg_class c
  join $sql$||p_source_2||$sql$_catalog_ft.pg_namespace n
- on n.oid=relnamespace
+ on n.oid=relnamespace 
+ join $sql$||p_source_2||$sql$_catalog_ft.pg_roles rl
+ on relowner=rl.oid
  where relkind in ('r', 'm', 'v')
  and nspname =$sql$||quote_literal(p_schema)|| $sql$)a
 union all
@@ -114,10 +119,12 @@ a.* from
  when 'v' then 'view'
  else 'matview'
  end,
- relowner::text from $sql$||p_source_2||
+ rolname ::text from $sql$||p_source_2||
   $sql$_catalog_ft.pg_class c
  join $sql$||p_source_2||$sql$_catalog_ft.pg_namespace n
- on n.oid=relnamespace
+ on n.oid=relnamespace 
+ join $sql$||p_source_2||$sql$_catalog_ft.pg_roles rl
+ on relowner=rl.oid
  where relkind in ('r', 'm', 'v')
  and nspname=$sql$||quote_literal(p_schema)|| $sql$
 except 
@@ -126,10 +133,12 @@ select relname::text,
  when 'v' then 'view'
  else 'matview'
  end,
- relowner::text from $sql$||p_source_1||
+ rolname ::text from $sql$||p_source_1||
   $sql$_catalog_ft.pg_class c
  join $sql$||p_source_1||$sql$_catalog_ft.pg_namespace n
- on n.oid=relnamespace
+ on n.oid=relnamespace  
+ join $sql$||p_source_1||$sql$_catalog_ft.pg_roles rl
+ on relowner=rl.oid
  where relkind in ('r', 'm', 'v')
  and nspname =$sql$||quote_literal(p_schema)|| $sql$)a
  order by 1,2$sql$;

@@ -47,7 +47,6 @@ return query  execute
                  and relkind in ('r','S','v','m')
               ) b 
        join pg_roles r on r.oid=b.perm_string[2]::oid
-          where rolname not like 'goose_island_owner%'
          $$)
        AS t1 (relname text, user_name text, perm text)
      except 
@@ -67,7 +66,6 @@ return query  execute
                and relkind in ('r','S','v','m')
            ) b 
          join pg_roles r on r.oid=b.perm_string[2]::oid
-             where rolname not like 'goose_island_owner%'
           $$)
        AS t1 (relname text, user_name text, perm text)) a
     union all
@@ -89,7 +87,6 @@ return query  execute
                  and relkind in ('r','S','v','m')
                  ) b 
          join pg_roles r on r.oid=b.perm_string[2]::oid
-             where rolname not like 'goose_island_owner%'
           $$) 
        AS t1 (relname text, user_name text, perm text)
     except 
@@ -109,8 +106,7 @@ return query  execute
                    and relkind in ('r','S','v','m')
                 ) b
            join pg_roles r on r.oid=b.perm_string[2]::oid
-                where rolname not like 'goose_island_owner%'
-              $$) 
+               $$) 
          AS t1 (relname text, user_name text, perm text)) a
    order by 1,2,3 $sql$;
 end;
@@ -155,7 +151,6 @@ from
 )s
 ) b 
 join pg_roles r on r.oid=b.perm_string[2]::oid
-where rolname not like 'goose_island_owner%'
 $$)
 AS t1 (relname text, user_name text, object_type text, perm text)
 except 
@@ -186,7 +181,6 @@ from
 )s
 ) b 
 join pg_roles r on r.oid=b.perm_string[2]::oid
-where rolname not like 'goose_island_owner%'
 $$)
 AS t1 (nsp text, user_name text, object_type text,  perm text))a
 union all
@@ -222,7 +216,6 @@ where nspname not like 'pg_%' and nspname not in ('public', 'information_schema'
 
 ) b 
 join pg_roles r on r.oid=b.perm_string[2]::oid
-where rolname not like 'goose_island_owner%'
 $$)
 AS t1 (relname text, user_name text, object_type text,  perm text)
 except 
@@ -339,7 +332,6 @@ where nspname not like 'pg_%' and nspname not in ('public', 'information_schema'
 and relkind in ('r','S','v','m')
 ) b 
 join pg_roles r on r.oid=b.perm_string[2]::oid
-where rolname not like 'goose_island_owner%'
 $$)
 AS t1 (relname text, user_name text, object_type text,perm text))a
 
@@ -385,7 +377,6 @@ where nspname not like 'pg_%' and nspname not in ('public', 'information_schema'
 
 ) b 
 join pg_roles r on r.oid=b.perm_string[2]::oid
-where rolname not like 'goose_island_owner%'
 $$)
 AS t1 (relname text, user_name text, object_type text,perm text)
 )a
