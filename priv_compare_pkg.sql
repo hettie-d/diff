@@ -1,5 +1,6 @@
+--select * from diff.privs_compare('airlines', 'hettie','postgres_air_large');
 --select * from diff.privs_compare('dev', 'prod','bx');
---select * from diff.privs_schema_compare('stage', 'prod');
+--select * from diff.privs_schema_compare('airlines', 'hettie');
 --select * from diff.db_privs_select ('stage')
 drop type if exists diff.priv_diff_record cascade;
 create type diff.priv_diff_record as (
@@ -47,6 +48,7 @@ return query  execute
                  and relkind in ('r','S','v','m')
               ) b 
        join pg_roles r on r.oid=b.perm_string[2]::oid
+          where rolname !='postgres'
          $$)
        AS t1 (relname text, user_name text, perm text)
      except 
@@ -66,6 +68,7 @@ return query  execute
                and relkind in ('r','S','v','m')
            ) b 
          join pg_roles r on r.oid=b.perm_string[2]::oid
+             where rolname !='postgres'
           $$)
        AS t1 (relname text, user_name text, perm text)) a
     union all
@@ -87,6 +90,7 @@ return query  execute
                  and relkind in ('r','S','v','m')
                  ) b 
          join pg_roles r on r.oid=b.perm_string[2]::oid
+             where rolname !='postgres'
           $$) 
        AS t1 (relname text, user_name text, perm text)
     except 
@@ -106,7 +110,8 @@ return query  execute
                    and relkind in ('r','S','v','m')
                 ) b
            join pg_roles r on r.oid=b.perm_string[2]::oid
-               $$) 
+                where rolname !='postgres'
+              $$) 
          AS t1 (relname text, user_name text, perm text)) a
    order by 1,2,3 $sql$;
 end;
@@ -141,8 +146,11 @@ from
  union
  select nspname, 
   case(defaclobjtype)
-	  when 'S' then 'sequence'
+     when 'S' then 'sequence'
       when 'r' then 'table'
+      when 'm' then 'mview'
+      when 'v' then 'view'
+      else 'other'
       end,
   d.defaclacl from pg_default_acl d
     join pg_namespace s on s.oid=defaclnamespace 
@@ -151,6 +159,7 @@ from
 )s
 ) b 
 join pg_roles r on r.oid=b.perm_string[2]::oid
+where rolname !='postgres'
 $$)
 AS t1 (relname text, user_name text, object_type text, perm text)
 except 
@@ -170,10 +179,14 @@ from
    where nspname not like 'pg_%' and nspname not in ('public', 'information_schema')
  union
  select nspname, 
+
   case(defaclobjtype)
 	  when 'S' then 'sequence'
       when 'r' then 'table'
-      end,
+      when 'm' then 'mview'
+      when 'v' then 'view'
+      else 'other'
+      end,   
   d.defaclacl from pg_default_acl d
     join pg_namespace s on s.oid=defaclnamespace 
     where nspname not like 'pg_%' and nspname not in ('public', 'information_schema')
@@ -181,6 +194,7 @@ from
 )s
 ) b 
 join pg_roles r on r.oid=b.perm_string[2]::oid
+where rolname !='postgres'
 $$)
 AS t1 (nsp text, user_name text, object_type text,  perm text))a
 union all
@@ -203,11 +217,15 @@ from
    where nspname not like 'pg_%' and nspname not in ('public', 'information_schema')
  union
  select nspname, 
+ 
   case(defaclobjtype)
 	  when 'S' then 'sequence'
       when 'r' then 'table'
+      when 'm' then 'mview'
+      when 'v' then 'view'
+      else 'other'
       end,
-  d.defaclacl from pg_default_acl d
+      d.defaclacl from pg_default_acl d
     join pg_namespace s on s.oid=defaclnamespace 
     where nspname not like 'pg_%' and nspname not in ('public', 'information_schema')
 
@@ -216,6 +234,7 @@ where nspname not like 'pg_%' and nspname not in ('public', 'information_schema'
 
 ) b 
 join pg_roles r on r.oid=b.perm_string[2]::oid
+where rolname !='postgres'
 $$)
 AS t1 (relname text, user_name text, object_type text,  perm text)
 except 
@@ -235,17 +254,21 @@ from
    where nspname not like 'pg_%' and nspname not in ('public', 'information_schema')
  union
  select nspname, 
+
   case(defaclobjtype)
 	  when 'S' then 'sequence'
       when 'r' then 'table'
+      when 'm' then 'mview'
+      when 'v' then 'view'
+      else 'other'
       end,
-  d.defaclacl from pg_default_acl d
+      d.defaclacl from pg_default_acl d
     join pg_namespace s on s.oid=defaclnamespace 
     where nspname not like 'pg_%' and nspname not in ('public', 'information_schema')
 
 )s) b 
 join pg_roles r on r.oid=b.perm_string[2]::oid
-where rolname not like 'goose_island_owner%'
+where rolname !='postgres'
 $$)
 AS t1 (nsp text, user_name text, object_type text,  perm text))a
 order by 1,2 $sql$;
@@ -307,7 +330,7 @@ a.* from
         where nspname not like 'pg_%' and nspname not in ('public', 'information_schema')      
         ) b 
   join pg_roles r on r.oid=b.perm_string[2]::oid
-  where rolname not like 'goose_island_owner%'
+  where rolname !='postgres'
   $$)
 AS t1 (relname text, user_name text, object_type text,perm text)
 )a
@@ -332,6 +355,7 @@ where nspname not like 'pg_%' and nspname not in ('public', 'information_schema'
 and relkind in ('r','S','v','m')
 ) b 
 join pg_roles r on r.oid=b.perm_string[2]::oid
+where rolname !='postgres'
 $$)
 AS t1 (relname text, user_name text, object_type text,perm text))a
 
@@ -367,6 +391,9 @@ from  (select nspname,
   case(defaclobjtype)
 	  when 'S' then 'sequence'
       when 'r' then 'table'
+      when 'm' then 'mview'
+      when 'v' then 'view'
+      else 'other'
       end,
   d.defaclacl from pg_default_acl d
     join pg_namespace s on s.oid=defaclnamespace 
@@ -377,6 +404,7 @@ where nspname not like 'pg_%' and nspname not in ('public', 'information_schema'
 
 ) b 
 join pg_roles r on r.oid=b.perm_string[2]::oid
+where rolname !='postgres'
 $$)
 AS t1 (relname text, user_name text, object_type text,perm text)
 )a
@@ -401,7 +429,7 @@ where nspname not like 'pg_%' and nspname not in ('public', 'information_schema'
 and relkind in ('r','S','v','m')
 ) b 
 join pg_roles r on r.oid=b.perm_string[2]::oid
-where rolname not like 'goose_island_owner%'
+where rolname !='postgres'
 $$)
 AS t1 (relname text, user_name text, object_type text,perm text))a
 
@@ -449,7 +477,7 @@ join (WITH RECURSIVE x AS
   and role::text not like 'pg%'
 ) ir
 on ir.roleid=r.oid 
-where member::text not like 'goose_island_owner%'
+where member::text !='postgres'
 $$)
 AS t1 (relname text, user_name text, object_type text,perm text))a
 $sql$;
