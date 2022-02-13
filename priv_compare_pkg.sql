@@ -1,7 +1,7 @@
+--select * from diff.privs_compare('airlines', 'hettie','postgres_air');
 --select * from diff.privs_compare('airlines', 'hettie','postgres_air_large');
---select * from diff.privs_compare('dev', 'prod','bx');
 --select * from diff.privs_schema_compare('airlines', 'hettie');
---select * from diff.db_privs_select ('stage')
+--select * from diff.db_privs_select ('airlines')
 drop type if exists diff.priv_diff_record cascade;
 create type diff.priv_diff_record as (
    location text,
