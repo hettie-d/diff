@@ -12,5 +12,11 @@ create schema diff;
   'localhost',
  null,
  null,
+ 'postgres');
+ call diff.catalog_fdw_setup (
+  'airlines',
+  'localhost',
+ null,
+ null,
  'postgres')
 */
