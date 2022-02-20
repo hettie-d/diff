@@ -1,5 +1,6 @@
- --call diff.catalog_fdw_setup('dev');
---call diff.catalog_fdw_setup('test');
+ --call diff.catalog_fdw_setup('hettie');
+--call diff.catalog_fdw_setup('airlines');
+--call diff.catalog_fdw_setup('demo');
 
 create or replace procedure diff.catalog_fdw_setup (
   p_database text,
