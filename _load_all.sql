@@ -8,15 +8,18 @@ create schema diff;
 
 --insert your parameters into the call below
 /*call diff.catalog_fdw_setup (
+   null,
   'hettie',
   'localhost',
- null,
- null,
- 'postgres');
+   null,
+   null,
+  'postgres');
+ 
  call diff.catalog_fdw_setup (
+   null,
   'airlines',
   'localhost',
- null,
- null,
- 'postgres')
+   null,
+   null,
+  'postgres')
 */
