@@ -339,7 +339,7 @@ case when p_table is null then $sql$ $sql$
  order by 2,3,4,1 $sql$
  ;
 
-raise notice 'table:%, %',p_table, v_sql;
+--raise notice 'table:%, %',p_table, v_sql;
  return query
 execute v_sql;
 end;
