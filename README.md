@@ -30,6 +30,7 @@ It will install postgres_fdw extension if it was not installed before and compil
 
 ### diff.catalog_fdw_setup 
 call diff.catalog_fdw_setup (
+            p_database_alias text,
             p_database text,
             p_host text default 'localhost',
             p_port text default null,
@@ -37,6 +38,6 @@ call diff.catalog_fdw_setup (
             p_password text default null);
             
 
-* Creates a foreign server which points to the database p_database on p_host (default 'localhost' connecting to post p_port mapping with p_user (default current_user) and p_password.
-* imports pg_catalog schema from p_database into p_database_catalog_ft schema
-* imports information_schema from 
+* Creates a foreign server which points to the database p_database on p_host (default 'localhost' connecting to post p_port mapping with p_user (default current_user) and p_password. The server name is fs_p_database_alias or fs_p_databas if the first parameter is null
+* imports pg_catalog schema from p_database into p_database_alias_catalog_ft schema
+* imports information_schema from p_database into p_database_alias_info_ft schema
