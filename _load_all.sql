@@ -3,6 +3,7 @@ create extension if not exists dblink;
 create schema diff;
 \ir catalog_fdw_setup.sql
 \ir schema_compare_pkg.sql
+\ir schema_compare_ext_pkg.sql
 \ir constraints_compare_pkg.sql
 \ir generate_patches_pkg.sql
 
