@@ -101,4 +101,5 @@ call diff.catalog_fdw_setup (
           p_source_2 text) -  compares schema-level permission         
  * diff.db_privs_direct_select (
           p_db_name text) - list of all explicity granted permissions within a specified database
-* diff.db_privs_select (p_db_name text) - list of all existing permissions on objects (as a result of applying all grants)
+* diff.db_privs_select (
+          p_db_name text) - list of all existing permissions on objects (as a result of applying all grants)
