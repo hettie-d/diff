@@ -47,8 +47,10 @@ begin
   execute $$grant usage on schema $$||v_database_alias||$$_info_ft to public$$;
   execute $$import foreign schema "pg_catalog" except	(pg_attribute, 
   						 pg_replication_slots,
-  						pg_statistic,
-  						pg_stats)from server
+  						 pg_statistic,
+  						 pg_stats,
+					     pg_stats_ext_exprs,
+					     pg_statistic_ext_data)from server
   	fs_$$||v_database_alias||$$ into $$||v_database_alias||$$_catalog_ft$$;
 	
   execute $$create foreign table $$||v_database_alias||$$_catalog_ft.pg_attribute(
