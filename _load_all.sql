@@ -6,6 +6,7 @@ create schema diff;
 \ir schema_compare_ext_pkg.sql
 \ir constraints_compare_pkg.sql
 \ir generate_patches_pkg.sql
+\ir generate_patches_ext.pkg.sql
 
 --insert your parameters into the call below
 /*call diff.catalog_fdw_setup (
