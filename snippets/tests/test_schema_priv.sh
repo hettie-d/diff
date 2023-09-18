@@ -1,5 +1,6 @@
 #!/bin/bash
 
+echo 'REVOKE CREATE ON DATABASE test1db FROM test1user;' | ./get_root_cli.sh
 echo 'DROP USER test1user;' | ./get_root_cli.sh
 echo 'DROP DATABASE test1db;' | ./get_root_cli.sh
 echo 'CREATE DATABASE test1db;' | ./get_root_cli.sh
@@ -22,4 +23,6 @@ echo "table_priv"
 (cat ../table_priv.sql; echo ";") | ./get_root_cli.sh
 echo "table_priv_inherit"
 (cat ../table_priv_inherit.sql; echo ";") | ./get_root_cli.sh
+echo "database_priv"
+(cat ../database_priv.sql; echo ";") | ./get_root_cli.sh
 echo $?
