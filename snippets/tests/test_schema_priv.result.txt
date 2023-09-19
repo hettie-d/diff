@@ -1,0 +1,38 @@
+REVOKE
+DROP DATABASE
+CREATE DATABASE
+ALTER ROLE
+GRANT
+schema_priv
+ nspname | rolname | object_type | perm_string 
+---------+---------+-------------+-------------
+(0 rows)
+
+table_priv
+ ?column? | rolname | ?column? | perm_string 
+----------+---------+----------+-------------
+(0 rows)
+
+table_priv_inherit
+ ?column? | member | ?column? | perm_string 
+----------+--------+----------+-------------
+(0 rows)
+
+database_priv
+                      GRANTS                       
+---------------------------------------------------
+ GRANT CONNECT ON DATABASE postgres TO test2user
+ GRANT CONNECT ON DATABASE template1 TO test2user
+ GRANT CONNECT ON DATABASE template0 TO test2user
+ GRANT CONNECT ON DATABASE test1db TO test2user
+ GRANT CONNECT ON DATABASE test2db TO test2user
+ GRANT CREATE ON DATABASE test2db TO test2user
+ GRANT TEMPORARY ON DATABASE postgres TO test2user
+ GRANT TEMPORARY ON DATABASE test1db TO test2user
+ GRANT TEMPORARY ON DATABASE test2db TO test2user
+ GRANT TEMP ON DATABASE postgres TO test2user
+ GRANT TEMP ON DATABASE test1db TO test2user
+ GRANT TEMP ON DATABASE test2db TO test2user
+(12 rows)
+
+0
