@@ -25,13 +25,25 @@ if [ "$res" != "CREATE SCHEMA" ]; then
 fi
 
 res=`echo "SELECT schema_name FROM information_schema.schemata WHERE schema_name='bla';" | (DBUSER=postgres ./get_user_cli.sh) | grep bla`
-if [ "$res" != " bla" ]; then
+if [ "$(echo -n $res)" != "bla" ]; then
    echo "Failure"
    echo "==$res=="
    exit 1
 fi
 
 echo "schema_priv"
+(cat ../schema_priv.sql; echo ";") | (DBUSER=postgres ./get_user_cli.sh)
+
+res=`echo 'CREATE SCHEMA bla1;' | (DBUSER=postgres ./get_user_cli.sh 2>&1)`
+if [ "$res" != "CREATE SCHEMA" ]; then
+   echo "Failure"
+   echo "==$res=="
+   exit 1
+fi
+
+echo "GRANT CREATE ON SCHEMA bla1 TO test2user;" | (DBUSER=postgres ./get_user_cli.sh)
+
+echo "schema_priv 1"
 (cat ../schema_priv.sql; echo ";") | (DBUSER=postgres ./get_user_cli.sh)
 echo "table_priv"
 (cat ../table_priv.sql; echo ";") | ./get_root_cli.sh
