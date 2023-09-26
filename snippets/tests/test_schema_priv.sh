@@ -32,7 +32,7 @@ if [ "$(echo -n $res)" != "bla" ]; then
 fi
 
 echo "schema_priv"
-(cat ../schema_priv.sql; echo ";") | (DBUSER=postgres ./get_user_cli.sh)
+(cat ../schema_priv.sql; echo ";") | sed 's/{user}/test2user/' | (DBUSER=postgres ./get_user_cli.sh)
 
 res=`echo 'CREATE SCHEMA bla1;' | (DBUSER=postgres ./get_user_cli.sh 2>&1)`
 if [ "$res" != "CREATE SCHEMA" ]; then
@@ -44,7 +44,14 @@ fi
 echo "GRANT CREATE ON SCHEMA bla1 TO test2user;" | (DBUSER=postgres ./get_user_cli.sh)
 
 echo "schema_priv 1"
-(cat ../schema_priv.sql; echo ";") | (DBUSER=postgres ./get_user_cli.sh)
+res=`(cat ../schema_priv.sql; echo ";") | sed 's/{user}/test2user/' | (DBUSER=postgres ./get_user_cli.sh | grep bla1)`
+if [ "$(echo -n $res)" != "GRANT CREATE ON schema bla1 TO test2user" ]; then
+	echo "Failure"
+	echo "==$res=="
+	exit 1
+fi
+echo "Grants visible as:"
+echo "$res"
 echo "table_priv"
 (cat ../table_priv.sql; echo ";") | ./get_root_cli.sh
 echo "table_priv_inherit"
@@ -52,3 +59,21 @@ echo "table_priv_inherit"
 echo "database_priv"
 (cat ../database_priv.sql; echo ";") | sed 's/{user}/test2user/' | ./get_root_cli.sh
 echo $?
+
+echo "REVOKE CREATE ON SCHEMA bla1 FROM test2user;" | (DBUSER=postgres ./get_user_cli.sh)
+
+echo "REVOKE CREATE ON DATABASE test2db FROM test2user;" | ./get_root_cli.sh
+
+echo "ALTER DEFAULT PRIVILEGES FOR USER test2user GRANT CREATE ON SCHEMAS TO test2user;" | (DBUSER=postgres ./get_user_cli.sh)
+
+
+res=`echo 'CREATE SCHEMA bla2;' | (DBUSER=postgres ./get_user_cli.sh 2>&1)`
+
+echo "schema_priv 2"
+(cat ../schema_priv.sql; echo ";") | sed 's/{user}/test2user/' | (DBUSER=postgres ./get_user_cli.sh | grep bla1)
+
+echo "database_priv 2"
+(cat ../database_priv.sql; echo ";") | sed 's/{user}/test2user/' | ./get_root_cli.sh
+echo $?
+
+
