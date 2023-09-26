@@ -1,0 +1,11 @@
+CREATE ROLE
+CREATE ROLE
+ALTER ROLE
+GRANT ROLE
+user roles after granted
+GRANT test3role TO test3user
+REVOKE ROLE
+user roles after revoked
+
+DROP ROLE
+DROP ROLE

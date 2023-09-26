@@ -1,7 +1,4 @@
-select nspname::text,
-rolname,
-object_type,
-perm_string[3]::text
+select concat('GRANT ', perm_string[3]::text, ' ON ', object_type, ' ', nspname::text, ' TO ', rolname) as "GRANTS" 
 from (
 select nspname,
 object_type,
@@ -28,4 +25,4 @@ where nspname not like 'pg_%' and nspname not in ('public', 'information_schema'
 
 ) b 
 join pg_roles r on r.oid=b.perm_string[2]::oid
-where rolname !='postgres'
+where rolname = '{user}'
