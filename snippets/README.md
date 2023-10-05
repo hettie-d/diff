@@ -2,6 +2,8 @@
 
 These snippets will have small parts of SQL that allow to generate GRANTS statements that recreate the current state of permissions _of the particular user_.
 
+Ultimate goal (not yeat achieved!) is to be able to get postgres implementation of `SHOW GRANTS` statement, available in MySQL.
+
 They are intended to be used as parts of other applications (see example shell scripts under `tests` folder).
 
 Conventions:

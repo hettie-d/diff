@@ -1,4 +1,4 @@
-select concat('GRANT ', perm_string[3]::text, ' ON ', object_type, ' ', nspname::text, ' TO ', rolname) as "GRANTS" 
+select concat('GRANT ', perm_string[3]::text, ' ON ', object_type, ' ', nspname::text, ' TO "', rolname, '"') as "GRANTS" 
 from (
 select nspname,
 object_type,
