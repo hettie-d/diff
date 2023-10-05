@@ -45,7 +45,7 @@ echo "GRANT CREATE ON SCHEMA bla1 TO test2user;" | (DBUSER=postgres ./get_user_c
 
 echo "schema_priv 1"
 res=`(cat ../schema_priv.sql; echo ";") | sed 's/{user}/test2user/' | (DBUSER=postgres ./get_user_cli.sh | grep bla1)`
-if [ "$(echo -n $res)" != "GRANT CREATE ON schema bla1 TO test2user" ]; then
+if [ "$(echo -n $res)" != "GRANT CREATE ON schema bla1 TO \"test2user\"" ]; then
 	echo "Failure"
 	echo "==$res=="
 	exit 1

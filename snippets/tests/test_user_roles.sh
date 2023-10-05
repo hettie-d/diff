@@ -25,7 +25,6 @@ if [ ! "$(echo -n $res)" = "" ]; then
 fi
 echo $res
 
-
 echo 'DROP USER test3user;' | ./get_root_cli.sh
 echo 'DROP ROLE test3role;' | ./get_root_cli.sh
 
