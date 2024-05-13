@@ -129,25 +129,59 @@ t.default_val as old_default
 from from_table fr
 join to_table t
 on fr.column_name=t.column_name
-and (fr.data_type !=t.data_type
-or fr.nullable !=t.nullable
-or coalesce(fr.default_val,' ') !=coalesce(t.default_val,' '))) loop
+and fr.data_type !=t.data_type) loop --- alter type
 if v_patch is null then v_patch:=$$ 
 alter table $$||p_schema||$$.$$||p_table; 
 else v_patch:=v_patch||',
 ';
  end if;
 v_patch:=v_patch||' alter column '||v_rec.column_name||
-case when v_rec.new_data_type!=v_rec.old_data_type
-then ' type ' ||v_rec.new_data_type
-else ''
-end||
+ ' type ' ||v_rec.new_data_type;
+end loop;  ---alter column
+
+for v_rec in (
+select fr.column_name, 
+fr.data_type as new_data_type,
+t.data_type as old_data_type,
+fr.nullable as new_nullable,
+t.nullable as old_nullable,
+fr.default_val as new_default,
+t.default_val as old_default
+from from_table fr
+join to_table t
+on fr.column_name=t.column_name
+and fr.nullable !=t.nullable) loop --null/not null
+if v_patch is null then v_patch:=$$ 
+alter table $$||p_schema||$$.$$||p_table; 
+else v_patch:=v_patch||',
+';
+ end if;
+v_patch:=v_patch||' alter column '||v_rec.column_name||
 case when v_rec.new_nullable ='NOT NULL' and v_rec.old_nullable=''
 then ' set NOT NULL'
 when v_rec.old_nullable ='NOT NULL' and v_rec.new_nullable=''
 then ' drop NOT NULL'
-else ''
-end||
+end;
+end loop;
+
+for v_rec in (
+select fr.column_name, 
+fr.data_type as new_data_type,
+t.data_type as old_data_type,
+fr.nullable as new_nullable,
+t.nullable as old_nullable,
+fr.default_val as new_default,
+t.default_val as old_default
+from from_table fr
+join to_table t
+on fr.column_name=t.column_name
+and coalesce(fr.default_val,' ') !=coalesce(t.default_val,' ')) loop  ---default
+if v_patch is null then v_patch:=$$ 
+alter table $$||p_schema||$$.$$||p_table; 
+else v_patch:=v_patch||',
+';
+ end if;
+v_patch:=v_patch||' alter column '||v_rec.column_name||
 case when v_rec.new_default is not null and v_rec.old_default is null
 then ' set '|| v_rec.new_default
 when v_rec.new_default is null and v_rec.old_default is not null
@@ -157,7 +191,6 @@ then ' '||v_rec.new_default
 else ''
 end;
 end loop;
-
 return v_patch;
 end;
 $body$;
@@ -298,4 +331,3 @@ end loop;
 return v_patch;
 end;
 $body$;
-
