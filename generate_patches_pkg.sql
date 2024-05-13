@@ -1,3 +1,4 @@
+
 --select * from diff.generate_patch_table('prod','stage','bx', 'supplier_products');
 --select * from diff.generate_patch_table('stage','prod','bx', 'brokerages');
 --select * from diff.generate_patch_table('prod','stage','bx', 'brokerages');
@@ -83,11 +84,10 @@ where table_schema=$sql$||quote_literal(p_schema)||
 execute v_sql;
 GET DIAGNOSTICS v_cnt_to:=ROW_COUNT;
 if v_cnt_to=0 then ---create table
-v_patch:=$$ 
-create table $$||p_schema||$$.$$||p_table||$$ ($$;
 for v_rec in (select * from from_table order by ordinal_position) loop
 if v_patch is not null then v_patch:=v_patch||',
 ';
+else v_patch:='';
 end if;
 v_patch :=v_patch||'
 '||v_rec.column_name||' '|| v_rec.data_type||' '||v_rec.nullable||
@@ -95,7 +95,7 @@ case when v_rec.default_val is null then ''
 else ' '||v_rec.default_val
 end;
 end loop;
-v_patch:=v_patch||')'; 
+v_patch:=$$ create table $$||p_schema||$$.$$||p_table||$$ ($$ ||v_patch||$$)$$; 
 else ---alter table
  for v_rec in (select * from from_table
   where column_name not in (select column_name from to_table) ) loop
@@ -284,7 +284,8 @@ on fs.oid=fc.relnamespace
 where s.nspname =$sql$||quote_literal(p_schema)||
 case when p_table is null then $sql$ $sql$  
       else $sql$ and c.relname= $sql$||quote_literal(p_table)
-		end;
+		end
+	;
 execute v_sql;
 GET DIAGNOSTICS v_cnt_to:=ROW_COUNT;
 --
@@ -331,3 +332,4 @@ end loop;
 return v_patch;
 end;
 $body$;
+
